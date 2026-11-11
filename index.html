@@ -128,51 +128,441 @@
     #messages { padding: 12px; }
     form { padding: 12px; }
   }
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap');
+
+  :root {
+    --navy: #073451;
+    --ocean: #007fac;
+    --aqua: #65e4e7;
+    --text: #143e57;
+    --muted: #5a778a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "DM Sans", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse at 12% 12%, #36c6d866, transparent 45%),
+      radial-gradient(ellipse at 90% 75%, #0096c277, transparent 50%),
+      linear-gradient(145deg, #041e38 0%, #07537d 48%, #088eac 100%);
+    background-attachment: fixed;
+  }
+
+  /* Soft ocean contours, with no image downloads required. */
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    width: 100vw;
+    height: 100vw;
+    border: 1px solid #ffffff12;
+    border-radius: 43%;
+    pointer-events: none;
+    z-index: -1;
+    box-shadow:
+      0 0 0 45px #ffffff05,
+      0 0 0 90px #ffffff05,
+      0 0 0 135px #ffffff04;
+  }
+
+  body::before {
+    top: 32%;
+    left: -65%;
+    transform: rotate(25deg);
+  }
+
+  body::after {
+    top: -85%;
+    right: -35%;
+    transform: rotate(-20deg);
+  }
+
+  main {
+    max-width: 960px;
+    margin: auto;
+    padding: 42px 22px 24px;
+  }
+
+  h1 {
+    margin: 0 0 12px;
+    color: #fff;
+    font-family: "Manrope", system-ui, sans-serif;
+    font-size: clamp(30px, 5vw, 46px);
+    font-weight: 800;
+    letter-spacing: -1.8px;
+    text-shadow: 0 4px 24px #00223e33;
+  }
+
+  h1::before {
+    content: "≈";
+    display: inline-grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-right: 14px;
+    border: 1px solid #ffffff36;
+    border-radius: 18px;
+    background: #ffffff12;
+    color: var(--aqua);
+    vertical-align: middle;
+  }
+
+  .intro {
+    max-width: 650px;
+    margin: 0;
+    color: #d0eaf5;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 24px 0;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    transition:
+      background 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    outline: 3px solid #fbcf7a;
+    outline-offset: 4px;
+  }
+
+  .suggestions button {
+    padding: 11px 17px;
+    border: 1px solid #ffffff40;
+    border-radius: 999px;
+    color: #fff;
+    background: #ffffff12;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .suggestions button:hover {
+    background: #ffffff25;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px #001a3020;
+  }
+
+  .chat {
+    overflow: hidden;
+    border: 1px solid #ffffff65;
+    border-radius: 24px;
+    background: #f6fbfe;
+    box-shadow:
+      0 30px 80px #00182e55,
+      0 4px 16px #002b431a;
+  }
+
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 22px 26px;
+    color: #fff;
+    background: linear-gradient(110deg, #073b61, #087fa0);
+    border-bottom: 1px solid #ffffff20;
+  }
+
+  .chat-header strong {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: "Manrope", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .chat-header strong::before {
+    content: "≈";
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #ffffff18;
+    border: 1px solid #ffffff30;
+    color: #9bf3f3;
+    font-size: 27px;
+  }
+
+  #reset {
+    flex-shrink: 0;
+    padding: 9px 13px;
+    border: 1px solid #ffffff40;
+    border-radius: 10px;
+    color: #fff;
+    background: #ffffff0d;
+    font-size: 12px;
+  }
+
+  #reset:hover {
+    background: #ffffff25;
+  }
+
+  #messages {
+    height: 55vh;
+    min-height: 350px;
+    overflow-y: auto;
+    padding: 28px;
+    background:
+      radial-gradient(ellipse at top right, #dff4fa70, transparent 60%),
+      #f6fbfe;
+    scrollbar-width: thin;
+    scrollbar-color: #a4cbdc transparent;
+  }
+
+  #messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #messages::-webkit-scrollbar-thumb {
+    background: #a4cbdc;
+    border-radius: 8px;
+  }
+
+  .message {
+    max-width: 92%;
+    margin-bottom: 22px;
+    line-height: 1.7;
+    animation: arrive 220ms ease-out;
+  }
+
+  .bubble {
+    padding: 17px 20px;
+    border: 1px solid #dbeaf2;
+    border-radius: 5px 19px 19px;
+    background: white;
+    color: #254c62;
+    box-shadow: 0 3px 10px #07345105;
+    white-space: pre-wrap;
+    font-size: 15px;
+  }
+
+  .user {
+    width: fit-content;
+    max-width: 82%;
+    margin-left: auto;
+    padding: 14px 20px;
+    border-radius: 19px 19px 5px;
+    background: linear-gradient(125deg, #086eae, #008eac);
+    color: #fff;
+    box-shadow: 0 6px 16px #007fac22;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 15px;
+  }
+
+  .tour {
+    position: relative;
+    overflow: hidden;
+    margin-top: 14px;
+    padding: 22px;
+    border: 1px solid #d5e7f0;
+    border-radius: 17px;
+    background: #fff;
+    box-shadow: 0 5px 18px #07345106;
+  }
+
+  .tour::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #008ab8, #64dadd);
+  }
+
+  .tour h3 {
+    margin: 0 0 10px;
+    color: #073e61;
+    font-family: "Manrope", system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+  }
+
+  .tour p {
+    margin: 10px 0;
+    color: #526e80;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .tour h3 + p {
+    color: #087c9c;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .details {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid #e4eff5;
+    border-radius: 11px;
+    background: #f3f9fc;
+    color: #345970;
+    font-size: 13px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+  }
+
+  .tour p.warning {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid #f2d89f;
+    border-radius: 10px;
+    background: #fff7e7;
+    color: #79531a;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .source {
+    margin: 14px 0;
+    color: #637e8d;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+
+  .tour button {
+    padding: 10px 15px;
+    border: 1px solid #c3e5ef;
+    border-radius: 9px;
+    background: #e9f7fb;
+    color: #076d8a;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .tour button:hover {
+    background: #d5f0f7;
+    transform: translateY(-1px);
+  }
+
+  form {
+    display: flex;
+    gap: 10px;
+    padding: 20px 24px;
+    border-top: 1px solid #dceaf2;
+    background: #fff;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 15px 17px;
+    border: 1px solid #cddfe9;
+    border-radius: 13px;
+    background: #f7fbfd;
+    color: #163f57;
+    font-size: 15px;
+    transition: border-color 180ms, box-shadow 180ms;
+  }
+
+  input::placeholder {
+    color: #6b8392;
+  }
+
+  input:focus {
+    border-color: #168eaf;
+    box-shadow: 0 0 0 4px #008eb010;
+  }
+
+  form button {
+    padding: 14px 23px;
+    border: 0;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #087bac, #0099ae);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 5px 14px #008ab825;
+  }
+
+  form button:hover {
+    background: linear-gradient(135deg, #066994, #00869a);
+    box-shadow: 0 7px 18px #008ab835;
+  }
+
+  .notice {
+    max-width: 760px;
+    margin: 20px auto 0;
+    color: #d1e8f2;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  @keyframes arrive {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    main { padding: 26px 12px 20px; }
+
+    h1 { letter-spacing: -1px; }
+
+    h1::before {
+      width: 40px;
+      height: 40px;
+      margin-right: 7px;
+      border-radius: 13px;
+    }
+
+    .intro { font-size: 14px; }
+    .suggestions { gap: 7px; margin: 20px 0; }
+    .suggestions button { padding: 9px 12px; font-size: 12px; }
+    .chat { border-radius: 18px; }
+    .chat-header { padding: 16px; }
+    .chat-header strong { font-size: 13px; gap: 8px; }
+    .chat-header strong::before { display: none; }
+    #messages { height: 56vh; padding: 16px; }
+    .message { max-width: 96%; }
+    .bubble { padding: 14px 16px; }
+    .tour { padding: 17px; }
+    .tour h3 { font-size: 16px; }
+    form { padding: 13px; gap: 8px; }
+    input { padding: 13px; font-size: 16px; }
+    form button { padding: 12px 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
-</head>
-<body>
-<main>
-  <h1>Atlantic Coast Tours</h1>
-  <p class="intro">
-    Find your next coastal adventure. Ask about tours, prices,
-    meeting points, durations or special offers.
-  </p>
-
-  <div class="suggestions">
-    <button data-question="Show all tours">All tours</button>
-    <button data-question="Kayaking under €75">Kayaking under €75</button>
-    <button data-question="Tours in Mayo">Tours in Mayo</button>
-    <button data-question="What is the cheapest tour?">Cheapest tour</button>
-    <button data-question="Show special offers">Special offers</button>
-  </div>
-
-  <section class="chat" aria-label="Tour chatbot">
-    <header class="chat-header">
-      <strong>Your coastal tour assistant</strong>
-      <button id="reset" type="button">New chat</button>
-    </header>
-
-    <div id="messages" role="log" aria-live="polite"
-         aria-relevant="additions" aria-label="Conversation"></div>
-
-    <form id="chat-form">
-      <input id="question" aria-label="Your question"
-             placeholder="Ask about a tour…"
-             maxlength="500" autocomplete="off" required>
-      <button type="submit">Send</button>
-    </form>
-  </section>
-
-  <p class="notice">
-    Based on Atlantic Coast Tours.xlsx. Availability and “slots this week”
-    are recorded spreadsheet values, not live availability.
-    Confirm prices, offers and bookings with the operator.
-  </p>
-</main>
-
-<script>
-"use strict";
-
 /*
   Embedded workbook snapshot.
   Columns:
