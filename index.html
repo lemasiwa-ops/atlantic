@@ -1,133 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atlantic Coast Tours — Chatbot</title>
-<style>
-  * { box-sizing: border-box; }
+<meta name="theme-color" content="#07537d">
+<title>Atlantic Coast Tours — Tour Assistant</title>
 
-  body {
-    margin: 0;
-    background: #eef5f3;
-    color: #163f43;
-    font-family: system-ui, sans-serif;
-  }
-
-  main {
-    max-width: 900px;
-    margin: auto;
-    padding: 24px 16px;
-  }
-
-  h1 { margin-bottom: 6px; }
-  .intro { color: #53716e; line-height: 1.6; }
-
-  .chat {
-    background: white;
-    border: 1px solid #ccdcd5;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 12px 35px #153c3810;
-  }
-
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px;
-    background: #164e49;
-    color: white;
-  }
-
-  button, input { font: inherit; }
-
-  button {
-    cursor: pointer;
-    border: 1px solid #c7dad2;
-    border-radius: 9px;
-    padding: 10px 14px;
-    background: #edf5f1;
-    color: #164e49;
-  }
-
-  button:hover { background: #dceee4; }
-
-  button:focus-visible, input:focus-visible {
-    outline: 3px solid #e2ad52;
-    outline-offset: 2px;
-  }
-
-  #messages {
-    height: 58vh;
-    min-height: 350px;
-    overflow-y: auto;
-    padding: 20px;
-  }
-
-  .message {
-    margin-bottom: 18px;
-    max-width: 95%;
-    line-height: 1.6;
-  }
-
-  .user {
-    margin-left: auto;
-    width: fit-content;
-    background: #164e49;
-    color: white;
-    border-radius: 14px 14px 3px 14px;
-    padding: 12px 16px;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
-
-  .bubble {
-    padding: 13px 16px;
-    background: #eef5f1;
-    border-radius: 3px 14px 14px;
-    white-space: pre-wrap;
-  }
-
-  .tour {
-    border: 1px solid #d4e1da;
-    padding: 16px;
-    margin-top: 12px;
-    border-radius: 12px;
-  }
-
-  .tour h3 { margin: 0 0 8px; font-size: 18px; }
-  .tour p { margin: 8px 0; }
-  .details { white-space: pre-wrap; font-size: 14px; }
-  .source { font-size: 11px; color: #647970; margin-top: 12px; }
-  .warning { padding: 10px; background: #fff2d9; color: #794b15; }
-  .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
-
-  form {
-    display: flex;
-    gap: 8px;
-    padding: 16px;
-    border-top: 1px solid #dce6df;
-  }
-
-  input {
-    flex: 1;
-    min-width: 0;
-    padding: 13px;
-    border: 1px solid #bfd3c8;
-    border-radius: 9px;
-  }
-
-  form button { background: #164e49; color: white; }
-  .notice { font-size: 12px; color: #62796e; line-height: 1.6; }
-
-  @media (max-width: 600px) {
-    main { padding: 14px 10px; }
-    h1 { font-size: 26px; }
-    #messages { padding: 12px; }
-    form { padding: 12px; }
-  }
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap');
 
@@ -136,7 +14,6 @@
     --ocean: #007fac;
     --aqua: #65e4e7;
     --text: #143e57;
-    --muted: #5a778a;
   }
 
   * { box-sizing: border-box; }
@@ -153,49 +30,64 @@
     background-attachment: fixed;
   }
 
-  /* Soft ocean contours, with no image downloads required. */
-  body::before,
-  body::after {
-    content: "";
+  .ocean-decoration {
     position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ocean-decoration::before,
+  .ocean-decoration::after {
+    content: "";
+    position: absolute;
     width: 100vw;
     height: 100vw;
     border: 1px solid #ffffff12;
     border-radius: 43%;
-    pointer-events: none;
-    z-index: -1;
     box-shadow:
       0 0 0 45px #ffffff05,
       0 0 0 90px #ffffff05,
       0 0 0 135px #ffffff04;
   }
 
-  body::before {
+  .ocean-decoration::before {
     top: 32%;
     left: -65%;
     transform: rotate(25deg);
   }
 
-  body::after {
+  .ocean-decoration::after {
     top: -85%;
     right: -35%;
     transform: rotate(-20deg);
   }
 
   main {
+    position: relative;
+    z-index: 1;
     max-width: 960px;
     margin: auto;
     padding: 42px 22px 24px;
   }
 
+  .eyebrow {
+    margin-bottom: 12px;
+    color: #9be8ee;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
   h1 {
     margin: 0 0 12px;
-    color: #fff;
+    color: white;
     font-family: "Manrope", system-ui, sans-serif;
-    font-size: clamp(30px, 5vw, 46px);
+    font-size: clamp(28px, 5vw, 46px);
     font-weight: 800;
-    letter-spacing: -1.8px;
-    text-shadow: 0 4px 24px #00223e33;
+    letter-spacing: -1.5px;
   }
 
   h1::before {
@@ -204,7 +96,7 @@
     place-items: center;
     width: 54px;
     height: 54px;
-    margin-right: 14px;
+    margin-right: 12px;
     border: 1px solid #ffffff36;
     border-radius: 18px;
     background: #ffffff12;
@@ -213,7 +105,7 @@
   }
 
   .intro {
-    max-width: 650px;
+    max-width: 680px;
     margin: 0;
     color: #d0eaf5;
     font-size: 16px;
@@ -227,10 +119,7 @@
     margin: 24px 0;
   }
 
-  button,
-  input {
-    font: inherit;
-  }
+  button, input { font: inherit; }
 
   button {
     cursor: pointer;
@@ -240,9 +129,7 @@
       box-shadow 180ms ease;
   }
 
-  button:active {
-    transform: translateY(1px);
-  }
+  button:active { transform: translateY(1px); }
 
   button:focus-visible,
   input:focus-visible {
@@ -254,7 +141,7 @@
     padding: 11px 17px;
     border: 1px solid #ffffff40;
     border-radius: 999px;
-    color: #fff;
+    color: white;
     background: #ffffff12;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -265,7 +152,6 @@
   .suggestions button:hover {
     background: #ffffff25;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px #001a3020;
   }
 
   .chat {
@@ -283,33 +169,41 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    padding: 22px 26px;
-    color: #fff;
+    padding: 20px 26px;
+    color: white;
     background: linear-gradient(110deg, #073b61, #087fa0);
-    border-bottom: 1px solid #ffffff20;
   }
 
-  .chat-header strong {
+  .assistant-identity {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: "Manrope", system-ui, sans-serif;
-    font-size: 15px;
-    font-weight: 700;
   }
 
-  .chat-header strong::before {
-    content: "≈";
+  .avatar {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
     background: #ffffff18;
     border: 1px solid #ffffff30;
     color: #9bf3f3;
-    font-size: 27px;
+    font-size: 30px;
+  }
+
+  .assistant-identity strong {
+    display: block;
+    font-family: "Manrope", system-ui, sans-serif;
+    font-size: 15px;
+  }
+
+  .assistant-identity small {
+    display: block;
+    margin-top: 4px;
+    color: #c9eaf4;
+    font-size: 11px;
   }
 
   #reset {
@@ -317,14 +211,12 @@
     padding: 9px 13px;
     border: 1px solid #ffffff40;
     border-radius: 10px;
-    color: #fff;
+    color: white;
     background: #ffffff0d;
     font-size: 12px;
   }
 
-  #reset:hover {
-    background: #ffffff25;
-  }
+  #reset:hover { background: #ffffff25; }
 
   #messages {
     height: 55vh;
@@ -338,9 +230,7 @@
     scrollbar-color: #a4cbdc transparent;
   }
 
-  #messages::-webkit-scrollbar {
-    width: 6px;
-  }
+  #messages::-webkit-scrollbar { width: 6px; }
 
   #messages::-webkit-scrollbar-thumb {
     background: #a4cbdc;
@@ -372,7 +262,7 @@
     padding: 14px 20px;
     border-radius: 19px 19px 5px;
     background: linear-gradient(125deg, #086eae, #008eac);
-    color: #fff;
+    color: white;
     box-shadow: 0 6px 16px #007fac22;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -386,7 +276,7 @@
     padding: 22px;
     border: 1px solid #d5e7f0;
     border-radius: 17px;
-    background: #fff;
+    background: white;
     box-shadow: 0 5px 18px #07345106;
   }
 
@@ -417,7 +307,7 @@
     line-height: 1.75;
   }
 
-  .tour h3 + p {
+  .tour .tour-meta {
     color: #087c9c;
     font-size: 13px;
     font-weight: 700;
@@ -468,12 +358,15 @@
     transform: translateY(-1px);
   }
 
+  .composer {
+    padding: 18px 24px 14px;
+    border-top: 1px solid #dceaf2;
+    background: white;
+  }
+
   form {
     display: flex;
     gap: 10px;
-    padding: 20px 24px;
-    border-top: 1px solid #dceaf2;
-    background: #fff;
   }
 
   input {
@@ -485,12 +378,9 @@
     background: #f7fbfd;
     color: #163f57;
     font-size: 15px;
-    transition: border-color 180ms, box-shadow 180ms;
   }
 
-  input::placeholder {
-    color: #6b8392;
-  }
+  input::placeholder { color: #6b8392; }
 
   input:focus {
     border-color: #168eaf;
@@ -509,7 +399,13 @@
 
   form button:hover {
     background: linear-gradient(135deg, #066994, #00869a);
-    box-shadow: 0 7px 18px #008ab835;
+  }
+
+  .composer-note {
+    margin: 10px 0 0;
+    color: #647d8c;
+    font-size: 11px;
+    text-align: center;
   }
 
   .notice {
@@ -528,14 +424,13 @@
 
   @media (max-width: 600px) {
     main { padding: 26px 12px 20px; }
-
     h1 { letter-spacing: -1px; }
 
     h1::before {
-      width: 40px;
-      height: 40px;
-      margin-right: 7px;
-      border-radius: 13px;
+      width: 38px;
+      height: 38px;
+      margin-right: 6px;
+      border-radius: 12px;
     }
 
     .intro { font-size: 14px; }
@@ -543,14 +438,16 @@
     .suggestions button { padding: 9px 12px; font-size: 12px; }
     .chat { border-radius: 18px; }
     .chat-header { padding: 16px; }
-    .chat-header strong { font-size: 13px; gap: 8px; }
-    .chat-header strong::before { display: none; }
+    .assistant-identity { gap: 9px; }
+    .assistant-identity strong { font-size: 13px; }
+    .avatar { width: 35px; height: 35px; font-size: 24px; }
     #messages { height: 56vh; padding: 16px; }
     .message { max-width: 96%; }
     .bubble { padding: 14px 16px; }
     .tour { padding: 17px; }
     .tour h3 { font-size: 16px; }
-    form { padding: 13px; gap: 8px; }
+    .composer { padding: 13px; }
+    form { gap: 8px; }
     input { padding: 13px; font-size: 16px; }
     form button { padding: 12px 16px; }
   }
@@ -563,15 +460,95 @@
     }
   }
 </style>
+</head>
+
+<body>
+<div class="ocean-decoration" aria-hidden="true"></div>
+
+<main>
+  <div class="eyebrow">Discover Ireland’s Atlantic coast</div>
+  <h1>Atlantic Coast Tours</h1>
+
+  <p class="intro">
+    Coastal trails, island escapes and unforgettable days on the water.
+    Find the right adventure with your personal tour assistant.
+  </p>
+
+  <div class="suggestions" aria-label="Suggested questions">
+    <button type="button" data-question="Show all tours">Explore all tours</button>
+    <button type="button" data-question="Kayaking under €75">Kayaking under €75</button>
+    <button type="button" data-question="Tours in Mayo">Discover Mayo</button>
+    <button type="button" data-question="What is the cheapest tour?">On a budget</button>
+    <button type="button" data-question="Show special offers">Special offers</button>
+  </div>
+
+  <section class="chat" aria-label="Tour chatbot">
+    <header class="chat-header">
+      <div class="assistant-identity">
+        <span class="avatar" aria-hidden="true">≈</span>
+        <div>
+          <strong>Your coastal tour assistant</strong>
+          <small>Explore 30 tours from our catalogue</small>
+        </div>
+      </div>
+
+      <button id="reset" type="button">New chat</button>
+    </header>
+
+    <div
+      id="messages"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-label="Conversation">
+    </div>
+
+    <div class="composer">
+      <form id="chat-form">
+        <input
+          id="question"
+          aria-label="Your tour question"
+          placeholder="Where will your next adventure take you?"
+          maxlength="500"
+          autocomplete="off"
+          required>
+        <button type="submit">Send</button>
+      </form>
+
+      <p class="composer-note">
+        Catalogue answers · No booking or payment is taken here
+      </p>
+    </div>
+  </section>
+
+  <p class="notice">
+    Based on Atlantic Coast Tours.xlsx. Schedules, offers and “slots this week”
+    are recorded spreadsheet values, not live availability.
+    Please confirm details with the operator before booking.
+  </p>
+
+  <noscript>
+    <p class="notice">Please enable JavaScript to use the tour assistant.</p>
+  </noscript>
+</main>
+
+<script>
+"use strict";
+
 /*
-  Embedded workbook snapshot.
-  Columns:
+  Embedded snapshot of Atlantic Coast Tours.xlsx, sheet "Untitled".
+
+  Column order:
   ID | Name | Category | Location | Meeting point | EUR price |
   Hours | Capacity | Schedule | Weekly slots | Offer | Description
 
-  Description text addressing AI systems has been excluded.
-  Prices come exclusively from the workbook's price_eur column.
+  Update this data when the workbook changes.
+  The page does not automatically connect to the Excel file.
+
+  Instructions addressed to AI systems in two descriptions have been
+  excluded. Prices come from the dedicated price_eur column.
 */
+
 const DATA = `
 ACT021|Wild Atlantic Way Coach & Cliffs Day|Boat Tour|Galway, Co. Galway|Galway Coach Station|888888|9|45|All week|12|Includes lunch|A full-day coach journey down the coast taking in the Cliffs of Moher, the Burren and Galway Bay.
 ACT007|Achill Island Coastal Explorer|Boat Tour|Achill, Co. Mayo|Kildavnet Pier|7000000|4|20|May-Sep|5||Cruise around Achill's sea cliffs and hidden coves, keeping an eye out for dolphins and basking sharks.
@@ -612,7 +589,11 @@ const tours = DATA.trim().split("\n").map((line, index) => {
   ] = line.split("|");
 
   return {
-    id, name, category, location, meeting,
+    id,
+    name,
+    category,
+    location,
+    meeting,
     price: Number(price),
     hours: Number(hours),
     capacity: Number(capacity),
@@ -627,34 +608,27 @@ const tours = DATA.trim().split("\n").map((line, index) => {
 
 const money = value => new Intl.NumberFormat("en-IE", {
   style: "currency",
-  currency: "EUR"
+  currency: "EUR",
+  maximumFractionDigits: 2
 }).format(value);
 
-const normalize = value => value.toLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .replace(/[^a-z0-9€.\s]/g, " ")
-  .replace(/\s+/g, " ")
-  .trim();
+function normalize(value) {
+  return value.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9€.\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-let currentTour = null;
-
-const stopWords = new Set(
-  "what which where when how much long is are the a an tour tours trip trips " +
-  "do you have tell me about show all please and or in at of for it its this " +
-  "that does cost price prices duration hours hour meeting point start from " +
-  "can i want to details available availability listed cheapest under below " +
-  "less than up maximum euro euros with any there your"
-    .split(" ")
-);
-
-// Build stop words explicitly to avoid string-concatenation ambiguity.
 const ignored = new Set(
-  ("what which where when how much long is are the a an tour tours trip trips " +
-   "do you have tell me about show all please and or in at of for it its this " +
-   "that does cost price prices duration hours hour meeting point start from " +
-   "can i want to details available availability listed cheapest under below " +
-   "less than up maximum euro euros with any there your").split(" ")
+  (
+    "what which where when how much long is are the a an tour tours trip trips " +
+    "do you have tell me about show all please and or in at of for it its this " +
+    "that does cost price prices duration hours hour meeting point start from " +
+    "can i want to details available availability listed cheapest under below " +
+    "less than up maximum euro euros eur with any there your find some"
+  ).split(" ")
 );
 
 const categoryRules = [
@@ -662,67 +636,103 @@ const categoryRules = [
   [/\b(cycling|cycle|bike|bikes|biking)\b/, "Cycling"],
   [/\b(food|seafood|oyster|oysters|foraging)\b/, "Food Tour"],
   [/\b(boat|boats|cruise|cruises|sailing)\b/, "Boat Tour"],
-  [/\b(hike|hiking|trek|trekking)\b/, "Cliff Walk"],
+  [/\b(hike|hiking|trek|trekking|cliff walk|cliff walks)\b/, "Cliff Walk"],
   [/\boutdoor\b/, "Outdoor Activity"]
 ];
+
+let currentTour = null;
+
+function tourAnswer(tour, question) {
+  currentTour = tour;
+
+  let text = "Here are the recorded details for this tour.";
+
+  if (/\b(today|tomorrow|departure|depart|time)\b/.test(question)) {
+    text = "Exact departure times and date-specific availability are not listed. The recorded schedule is shown below.";
+  }
+
+  if (/\b(children|child|kids|beginner|beginners|suitable|family)\b/.test(question)) {
+    text = "Any recorded suitability information appears in the description or offer below. Other age and participation requirements need operator confirmation.";
+  }
+
+  return { text, tours: [tour] };
+}
 
 function respond(question) {
   const q = normalize(question);
 
-  if (/^(hi|hello|hey|thanks|thank you)$/.test(q)) {
+  if (/^(hi|hello|hey)$/.test(q)) {
     return {
-      text: "Hello! Ask me about a tour, destination, price, duration or meeting point.",
+      text: "Hello! Ready to explore the Atlantic coast? Ask about a destination, activity, price or particular tour.",
       tours: []
     };
   }
 
-  if (/\b(refund|cancellation|cancel|wheelchair|accessible|insurance|payment|deposit|phone|email|book|booking|reserve)\b/.test(q)) {
+  if (/^(thanks|thank you|thank you very much)$/.test(q)) {
     return {
-      text: "The spreadsheet does not include booking facilities, contact details or those policies. Please confirm with the operator. I can help with the recorded tour details.",
+      text: "You're welcome! Let me know if you'd like to explore another tour.",
       tours: []
     };
   }
 
-  const tokens = q.split(" ").filter(
-    word => word.length > 2 && !ignored.has(word) &&
-            !/^\d+(\.\d+)?$/.test(word)
+  if (/\b(refund|cancellation|cancel|wheelchair|accessible|accessibility|insurance|payment|deposit|phone|email|book|booking|reserve)\b/.test(q)) {
+    return {
+      text: "The catalogue does not include booking facilities, contact details or those policies. Please confirm directly with the operator. I can help with recorded tour details, prices, meeting points and offers.",
+      tours: []
+    };
+  }
+
+  const idMatch = tours.find(tour =>
+    new RegExp("\\b" + tour.id.toLowerCase() + "\\b").test(q)
+  );
+
+  if (idMatch) return tourAnswer(idMatch, q);
+
+  const exactName = tours.find(tour =>
+    q.includes(normalize(tour.name))
+  );
+
+  if (exactName) return tourAnswer(exactName, q);
+
+  const tokens = q.split(" ").filter(word =>
+    word.length > 2 &&
+    !ignored.has(word) &&
+    !/^\d+(\.\d+)?$/.test(word)
   );
 
   const ranked = tours.map(tour => {
-    const name = normalize(tour.name);
-    const score = q.includes(tour.id.toLowerCase()) ? 100 :
-      tokens.reduce((total, word) =>
-        total + (name.split(" ").includes(word) ? 1 : 0), 0);
+    const nameWords = normalize(tour.name).split(" ");
+    const score = tokens.reduce(
+      (total, word) => total + (nameWords.includes(word) ? 1 : 0),
+      0
+    );
     return { tour, score };
   }).sort((a, b) => b.score - a.score);
 
-  let selected = null;
+  const hasNumericFilter =
+    /\b(under|below|less than|up to|maximum)\s*€?\s*\d/.test(q);
 
-  if (ranked[0].score >= 2 &&
+  if (!hasNumericFilter &&
+      ranked[0].score >= 2 &&
       ranked[0].score > ranked[1].score) {
-    selected = ranked[0].tour;
+    return tourAnswer(ranked[0].tour, q);
   }
 
   const followUp =
     /^(how much|how long|where do we meet|where is the meeting|what is the price|any offers|what time)/.test(q) ||
     /\b(it|its|this tour|that tour)\b/.test(q);
 
-  if (!selected && currentTour && followUp) selected = currentTour;
+  if (currentTour && followUp && ranked[0].score === 0 &&
+      !hasNumericFilter) {
+    return tourAnswer(currentTour, q);
+  }
 
-  if (selected) {
-    currentTour = selected;
-
-    let text = "Here are the recorded details for this tour.";
-
-    if (/\b(today|tomorrow|departure|depart|time)\b/.test(q)) {
-      text = "Exact departure times and date-specific availability are not listed. The recorded schedule is shown below.";
-    }
-
-    if (/\b(children|child|kids|beginner|beginners|suitable|family)\b/.test(q)) {
-      text = "Any recorded suitability information appears in the description or offer below. Other age and participation requirements need operator confirmation.";
-    }
-
-    return { text, tours: [selected] };
+  if (/^(help|show everything|show all tours|all tours|list all tours|explore all tours)$/.test(q)) {
+    currentTour = null;
+    return {
+      text: "Here are all 30 tours in the catalogue. Select a tour to ask follow-up questions.",
+      tours: [...tours]
+    };
   }
 
   let matches = [...tours];
@@ -736,29 +746,37 @@ function respond(question) {
     }
   }
 
+  // Match one or more counties as alternatives.
   const counties = ["galway", "mayo", "clare"];
-  for (const county of counties) {
-    if (new RegExp("\\b" + county + "\\b").test(q)) {
-      matches = matches.filter(tour =>
-        normalize(tour.location).includes(county));
-      filtered = true;
-    }
+  const mentionedCounties = counties.filter(county =>
+    new RegExp("\\b" + county + "\\b").test(q)
+  );
+
+  if (mentionedCounties.length) {
+    matches = matches.filter(tour =>
+      mentionedCounties.some(county =>
+        normalize(tour.location).includes("co. " + county)
+      )
+    );
+    filtered = true;
   }
 
   const towns = [...new Set(
     tours.map(tour => normalize(tour.location.split(",")[0]))
   )].filter(town => !counties.includes(town));
 
-  const town = towns.find(value =>
-    new RegExp("\\b" + value + "\\b").test(q));
+  const mentionedTowns = towns.filter(town =>
+    new RegExp("\\b" + town + "\\b").test(q)
+  );
 
-  if (town) {
+  if (mentionedTowns.length) {
     matches = matches.filter(tour =>
-      normalize(tour.location.split(",")[0]) === town);
+      mentionedTowns.includes(normalize(tour.location.split(",")[0]))
+    );
     filtered = true;
   }
 
-  // Capture price and duration limits separately.
+  // Parse price and duration limits independently.
   const limitPattern =
     /\b(under|below|less than|up to|maximum)\s*(€)?\s*(\d+(?:\.\d+)?)\s*(hours?|hrs?|euros?|eur)?/g;
 
@@ -788,15 +806,21 @@ function respond(question) {
   }
 
   if (/\b(cheapest|cheaper|affordable|budget)\b/.test(q)) {
-    matches = matches.filter(tour => !tour.review)
+    matches = matches
+      .filter(tour => !tour.review)
       .sort((a, b) => a.price - b.price);
+
     if (q.includes("cheapest")) matches = matches.slice(0, 1);
     filtered = true;
   }
 
   if (/\b(shortest|longest)\b/.test(q)) {
     matches.sort((a, b) =>
-      q.includes("shortest") ? a.hours - b.hours : b.hours - a.hours);
+      q.includes("shortest")
+        ? a.hours - b.hours
+        : b.hours - a.hours
+    );
+
     matches = matches.slice(0, 1);
     filtered = true;
   }
@@ -818,8 +842,7 @@ function respond(question) {
   }
 
   if (!filtered) {
-    if (/^(show |list |explore )?(all )?tours$/.test(q) ||
-        /^(help|show everything)$/.test(q)) {
+    if (/^(show |list |explore )?(all )?tours$/.test(q)) {
       matches = [...tours];
     } else {
       return {
@@ -831,14 +854,16 @@ function respond(question) {
 
   if (!matches.length) {
     return {
-      text: "No catalogue entries match those filters. Try a different activity, location or budget.",
+      text: "No catalogue entries match those filters. Try another activity, location or budget.",
       tours: []
     };
   }
 
   currentTour = matches.length === 1 ? matches[0] : null;
 
-  let text = `${matches.length} catalogue ${matches.length === 1 ? "match" : "matches"}. Select a tour to ask follow-up questions.`;
+  let text =
+    `${matches.length} catalogue ${matches.length === 1 ? "match" : "matches"}. ` +
+    "Select a tour to ask follow-up questions.";
 
   if (/\b(today|tomorrow|week|available|availability|slots)\b/.test(q)) {
     text += " Weekly slots are recorded values; live or date-specific availability cannot be confirmed here.";
@@ -851,13 +876,16 @@ function respond(question) {
   return { text, tours: matches };
 }
 
+// Render text safely using textContent, never user-generated HTML.
 const messages = document.getElementById("messages");
 const questionInput = document.getElementById("question");
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
+
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
+
   return node;
 }
 
@@ -866,7 +894,11 @@ function tourCard(tour) {
 
   card.append(
     element("h3", "", tour.name),
-    element("p", "", `${tour.location} · ${tour.hours} hours · ${money(tour.price)} listed price`),
+    element(
+      "p",
+      "tour-meta",
+      `${tour.location} · ${tour.hours} hours · ${money(tour.price)} listed price`
+    ),
     element("p", "", tour.description),
     element(
       "div",
@@ -896,9 +928,11 @@ function tourCard(tour) {
 
   const button = element("button", "", "Ask about this tour");
   button.type = "button";
-  button.addEventListener("click", () => send(`Tell me about ${tour.id}`));
-  card.append(button);
+  button.addEventListener("click", () =>
+    send(`Tell me about ${tour.id}`)
+  );
 
+  card.append(button);
   return card;
 }
 
@@ -909,11 +943,21 @@ function addMessage(text, role, results = []) {
     message.textContent = text;
   } else {
     message.append(element("div", "bubble", text));
-    for (const tour of results) message.append(tourCard(tour));
+
+    for (const tour of results) {
+      message.append(tourCard(tour));
+    }
   }
 
   messages.append(message);
-  messages.scrollTop = message.offsetTop - messages.offsetTop;
+
+  // Scroll inside the conversation without moving the whole page.
+  const top =
+    message.getBoundingClientRect().top -
+    messages.getBoundingClientRect().top +
+    messages.scrollTop;
+
+  messages.scrollTop = Math.max(0, top - 16);
 }
 
 function send(question) {
@@ -926,14 +970,18 @@ function send(question) {
   addMessage(response.text, "assistant", response.tours);
 
   questionInput.value = "";
-  questionInput.focus();
+  questionInput.focus({ preventScroll: true });
 }
 
 function resetChat() {
   currentTour = null;
   messages.replaceChildren();
+
   addMessage(
-    "Welcome to Atlantic Coast Tours! I can help you explore 30 tours and find their prices, durations, meeting points and listed offers. What would you like to discover?",
+    "Welcome to Atlantic Coast Tours! 🌊\n\n" +
+    "From island adventures to coastal walks and local food experiences, " +
+    "I can help you explore our 30 tours.\n\n" +
+    "Try “kayaking under €75”, “tours in Mayo”, or ask about a particular tour.",
     "assistant"
   );
 }
@@ -944,7 +992,9 @@ document.getElementById("chat-form").addEventListener("submit", event => {
 });
 
 document.querySelectorAll("[data-question]").forEach(button => {
-  button.addEventListener("click", () => send(button.dataset.question));
+  button.addEventListener("click", () =>
+    send(button.dataset.question)
+  );
 });
 
 document.getElementById("reset").addEventListener("click", resetChat);
